@@ -1,0 +1,46 @@
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script src="/js/jquery.js" type="text/javascript"></script>
+		<script src="/js/jquery.ui.js" type="text/javascript"></script>
+		<link href="/css/jquery.ui.css" type="text/css" rel="stylesheet">
+		<style>
+			.approve { font-size: 1.3em; text-decoration: none; color: green }
+			.delete { font-size: 1.2em; text-decoration: none; color: red }
+			.approve:hover, .delete:hover { color: gray }
+			h4, table { font-family: verdana }
+			table tr th { background-color: #CCC }
+		</style>
+		<title>Новые цитаты</title>
+	</head>
+	<body>
+		<h3><a href='/'>..</a> / Новые цитаты</h3>
+		<table style='width:80%' cellpadding='2' cellspacing='2' border='0'>
+			<tr>
+				<th>Кто прислал</th>
+				<th>Название произведения</th>
+				<th>Автор</th>
+				<th>Время действия</th>
+				<th>Текст цитаты</th>
+				<th nowrap>Когда прислали</th>
+				<th></th>
+			</tr>
+			% foreach my $q (@$quotes) {
+				<tr style='vertical-align:top;'>
+					<td><%= $q->{submited_by} %></td>
+					<td><%= $q->{book_title} %></td>
+					<td><%= $q->{author} %></td>
+					<td><%= $q->{time_string} %></td>
+					<td><%= $q->{quote} %></td>
+					<td><%= $q->{submited_on} %></td>
+					<td nowrap>
+						<a class='approve' title='Принять' href='/queue/add/<%= $q->{row_id} %>'><b>&#10004;</a>
+						&nbsp;
+						<a class='delete' title='Удалить' href='/queue/delete/<%= $q->{row_id} %>'
+							onclick='return confirm("Вы уверены?");'><b>&#10008;</a>
+					</td>
+				</tr>
+			% }
+		</table>
+	</body>
+</html>

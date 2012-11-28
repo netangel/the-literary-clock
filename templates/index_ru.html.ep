@@ -1,0 +1,59 @@
+% title 'Литературные часы';
+% layout 'default';
+<ul>
+	<li><a href="#add-quote">Добавить</a></li>
+	<li><a href="#current-quotes">Недавние цитаты</a></li>
+	<li><a href="#history">История</a></li>
+	<li><a href="#about">Про часы</a></li>
+</ul>
+<div id='add-quote'>
+	% if ( $thanks ) {
+		<h4 style='display:block;'> Спасибо! </h4>
+	%	session( thanks => 0 );
+	% }
+
+	<form id='add-quote-form' name='add-quote-form' method='post' action='/add'>
+		<table style='width:100%' cellpadding='2' cellspacing='2' border='0'>
+			<tr>
+				<td style='width:10%' nowrap><label for='add-quote-username'>Как Вас зовут</label></td>
+				<td style='width:5px'>:</td>
+				<td>
+					<input type='text' id='add-quote-username' name='add-quote-username' 
+									maxlength='255' style='width:70%' 
+									value='<%= session('username') if session('remember_me') %>' />	
+					<input type='checkbox' name='remember_me' id='remember_me' value='1' <%= 'checked' if session('remember_me') %> />
+					<label for='remember_me'>запомнить</label>
+				</td>
+			</tr>
+			<tr>
+				<td style='width:10%' nowrap><label for='add-quote-title'>Произведение</label></td>
+				<td style='width:5px'>:</td>
+				<td><input type='text' id='add-quote-title' name='add-quote-title' maxlength='255' style='width:100%'></td>
+			</tr>
+			<tr>
+				<td style='width:10%' nowrap><label for='add-quote-author'>Автор</label></td>
+				<td style='width:5px'>:</td>
+				<td><input type='text' id='add-quote-author' name='add-quote-author' maxlength='255' style='width:100%'></td>
+			</tr>
+			<tr>
+				<td style='width:10%' nowrap valign='top'><label for='add-quote-text'>Цитата</label></td>
+				<td style='width:5px' valign='top'>:</td>
+				<td><textarea id='add-quote-text' name='add-quote-text' rows='5' style='width:100%'></textarea></td>
+			</tr>
+			<tr>
+				<td style='width:10%' nowrap><label for='add-quote-time'>Время</label></td>
+				<td style='width:5px'>:</td>
+				<td><input type='text' id='add-quote-time' name='add-quote-time' maxlength='255' style='width:100%'></td>
+			</tr>
+			<tr>
+				<td colspan='3' style='text-align:center'>
+					<input type='hidden' name='lang' value='ru'>
+					<input type="submit" value="Добавить">
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<div id='current-quotes'></div>
+<div id='history'></div>
+<div id='about'><p></p></div>

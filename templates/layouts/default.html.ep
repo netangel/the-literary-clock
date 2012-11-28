@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="/js/jquery.js" type="text/javascript"></script>
+    <script src="/js/jquery.ui.js" type="text/javascript"></script>
+    <link href="/css/jquery.ui.css" type="text/css" rel="stylesheet">
+	<title><%= $title %></title>
+	<script>
+		var next_time = 0;
+		var times = [ '<%== join( "', '", @$times_array ) %>' ];
+		var ts = 0;
+		var timeoutId = 0;
+
+		$(function(){
+			updateClock();
+			setInterval('updateClock()', 1000);
+			$('#tabs').tabs(<%= '{selected: 1}' if ( $lang eq 'ru' && !$thanks ) %>);
+			% if ( $lang eq 'ru' ) {
+				$('#add-quote-form input:submit').button();
+			% }
+			$('#timescroll').slider({
+				min: 0,
+				max: <%== scalar @$times_array - 1 %>,
+				slide: function( event, ui ) {
+					$('#jump_to_time_indicator').text(times[ui.value]);
+				},
+				stop: function(event, ui) {
+					if ( timeoutId != 0 ) {	clearTimeout(timeoutId); }
+					next_time = 0;
+					ts = times[ui.value];
+					timeoutId = setTimeout('ts = 0; next_time = 0;', 15000);
+					updateClock();
+				}
+			});
+		});
+
+		function resetClock() {
+			if ( timeoutId != 0 ) clearTimeout(timeoutId);
+			ts = 0; next_time = 0;
+			updateClock();
+			return true;
+		}
+	
+		function updateClock() {
+			var cT = new Date();
+			if (ts) {
+				hms = ts.split(':');
+				cT.setHours( hms[0] );
+				cT.setMinutes( hms[1] );
+				cT.setSeconds( hms[2] );
+			}
+
+			var cTs = '';
+			var hours = cT.getHours();
+			if (hours < 10) hours = "0" + hours;
+			var minutes = cT.getMinutes();
+			if (minutes < 10) minutes = "0" + minutes;
+			var seconds = cT.getSeconds();
+			if (seconds < 10) seconds = "0" + seconds;
+			cTs = hours + ":" + minutes + ":" + seconds;
+			$('#ticking-clock').text(cTs);
+
+			if ( ( ts || next_time == cTs || next_time == 0 ) && next_time != '-1' ) {
+				$.getJSON( '/quote', {time : cTs, lang : '<%= $lang %>'}, function(json){
+					if ( !json.quotes || json.quotes.length == 0 ) {
+						$('#current-quotes').html('<h4 style="display:block;">Пусто</h4>');
+						next_time = '-1';
+						return 0;
+					}
+					if ( !ts && json.next_time ) next_time = json.next_time;
+					var old_quotes = $('#current-quotes').html();
+					$('#current-quotes').html('');
+					$('#history').prepend(old_quotes);
+					var quote_time = '';
+					$.each(json.quotes, function(i,q){
+						$('<h4>').attr('id', 'quote_'+q.row_id+'_header')
+								 .html('"'+q.book_title+'"<%= $lang eq 'en' ? ' by ' : '. ' %>'+q.author+'<span style="float:right">'+q.time_string+'</span>')
+								 .appendTo('#current-quotes')
+								 .fadeIn('medium');
+						$('<p>').attr('id', 'quote_'+q.row_id)
+								.text(q.quote)
+								.appendTo('#current-quotes')
+								.fadeIn('medium');
+						quote_time = q.time_string;
+					});
+					$('#timescroll').slider( "option", "value", times.indexOf(quote_time) );
+					$('#jump_to_time_indicator').text(quote_time);
+				});
+			}
+
+			if ( ts ) {	next_time = '-1'; }
+		}
+	</script>
+	<style>
+		#main { width:70%; position:relative; left:15%; }
+		#language-select { font-family:verdana; font-size:smaller; width: 50%; float: left; }
+		#su-link { font-family:verdana; font-size:smaller; width: 50%; float: right; text-align: right; }
+		#clock-container { font-family:verdana; font-size:5em; clear:both; text-align:center; width:100%; color:#3383BB; cursor: pointer; }
+		#current-quotes, #history { font-family:verdana; clear:both; }
+		#add-quote h4, #current-quotes h4, #history h4 { background-color:white; padding:5px; text-align:left; display:none; }
+		#current-quotes p, #history p { background-color:white; padding:5px; text-align:left; display:none; }
+		#about p { background-color:white; padding:5px; text-align:left; font-size:smaller; }
+		#scroll_container { width:100%; margin-top: 5px; margin-bottom: 5px; }
+		#jump_to_time_container { width:100%; font-family:verdana; font-size:smaller; }
+		#scroll_scaler {  height:2em; width:100%; font-family:verdana; font-size:smaller; }
+		#add-quote-form table tr td { vertical-align: top; }
+	</style>
+  </head>
+  <body>
+	<div id='main'>
+		<div id='language-select'>
+			<a href='/ru'>Русский</a>/<a href='/en'>English</a>
+		</div>
+		<div id='su-link'>
+			<a href='/queue'>su</a>
+		</div>
+		<div id='clock-container' onClick='resetClock();'>
+			<span id='ticking-clock'></span>
+		</div>
+		<div id='jump_to_time_container'>
+			<span>
+				<%= ( $lang eq 'en' ) ? 'Jump to' : 'Перейти к'; %>:
+				<span id='jump_to_time_indicator'></span>
+			</span>
+		</div>
+		<div id='scroll_container'>
+			<div id='timescroll'></div>
+		</div>
+		<div id='scroll_scaler'>
+			<span style='float:left;'>00:00:00</span>
+			<span style='float:right;'>23:59:59</span>
+		</div>
+		<div id='tabs'>
+			<%= content %>
+		</div>
+	</div>
+  </body>
+</html>

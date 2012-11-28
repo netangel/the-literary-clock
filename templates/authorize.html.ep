@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    	<script src="/js/jquery.js" type="text/javascript"></script>
+    	<script src="/js/jquery.ui.js" type="text/javascript"></script>
+    	<link href="/css/jquery.ui.css" type="text/css" rel="stylesheet">
+		<title>Quotes queue</title>
+		<style type="text/css">
+			#main { width:20%; position:relative; left:40%; }
+		</style>
+	</head>
+	<body>
+		<div id='main'>
+			<h3><a href='/'>..</a> / <%= config('language') eq 'en' ? "Admin" : "Управление" %> </h3>
+			<h4><%= config('language') eq 'en' ? "Please, enter password" : "Пожалуйста, введите пароль" %></h4>
+			<form action='/queue' method='post'>
+				<input type='password' name='admin_passwd' id='admin_passwd' onclick='this.value="";'>&nbsp;
+				<input type="submit" value="login">
+			</form>
+		</div>
+	</body>
+</html>
