@@ -3,7 +3,7 @@
 <ul>
 	<li><a href="#current-quotes">Latest quotes</a></li>
 	<li><a href="#history">History</a></li>
-	<li><a href="#about">About</a></li>
+	<li><a href="#about">?</a></li>
 </ul>
 <div id='current-quotes'></div>
 <div id='history'></div>

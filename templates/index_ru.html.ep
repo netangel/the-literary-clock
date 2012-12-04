@@ -4,7 +4,7 @@
 	<li><a href="#add-quote">Добавить</a></li>
 	<li><a href="#current-quotes">Недавние цитаты</a></li>
 	<li><a href="#history">История</a></li>
-	<li><a href="#about">Про часы</a></li>
+	<li><a href="#about">?</a></li>
 </ul>
 <div id='add-quote'>
 	% if ( $thanks ) {

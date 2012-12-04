@@ -17,6 +17,6 @@ CREATE INDEX IF NOT EXISTS time_index on quotes (time_string);
 CREATE INDEX IF NOT EXISTS checksum_index on quotes (quote_checksum);
 CREATE INDEX IF NOT EXISTS approved_index on quotes (approved);
 CREATE INDEX IF NOT EXISTS submited_by_index on quotes (submited_by);
-CREATE INDEX IF NOT EXISTS language_index on quotes (submited_by);
+CREATE INDEX IF NOT EXISTS language_index on quotes (language);
 
 COMMIT;
